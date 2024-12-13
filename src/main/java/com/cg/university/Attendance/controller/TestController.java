@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin( origins = "http://localhost:4205", maxAge = 3600)
@@ -126,11 +127,6 @@ public class TestController {
 //        return ResponseEntity.ok(loginResponse);
 //    }
 
-//    @GetMapping("/hello")
-//    public String hello()
-//    {
-//        return "Spring Security";
-//    }
 
     @GetMapping("/users")
     public List<User> findAll() {
@@ -146,11 +142,6 @@ public class TestController {
     public List<Holidays> getAllHolidays() {
         System.out.println("Holidays");
         return holidayService.getAllHolidays();
-    }
-
-    @GetMapping("/test")
-    public String test() {
-        return "Successful";
     }
 
     /*
@@ -271,9 +262,24 @@ public class TestController {
 //        return userDetails;
 //    }
 
+//    @GetMapping("/Attendance")
+//    public List<Attendance> findAllAttendance() {
+//        return attendanceRepository.findAll();
+//    }
+
     @GetMapping("/Attendance")
-    public List<Attendance> findAllAttendance() {
-        return attendanceRepository.findAll();
+    public List<AttendanceDTO> findAllAttendance() {
+        List<Attendance> attendances = attendanceRepository.findAll();
+//        List<AttendanceDTO> attendanceDTOs = attendances.stream()
+//                .map(AttendanceDTO::new)
+//                .collect(Collectors.toList());
+
+        List<AttendanceDTO> attendanceDTOs = attendances.stream()
+                .map(attendance -> new AttendanceDTO(attendance))  // Use lambda instead of method reference
+                .collect(Collectors.toList());
+
+
+        return attendanceDTOs;
     }
 
     @PostMapping("/login")
